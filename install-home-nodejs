@@ -1,0 +1,78 @@
+#!/bin/bash 
+# 
+# Script in charge of installing nodejs and npm in the current home directory
+#
+
+STOW_VERSION="2.1.3"
+NODE_VERSION="0.6.18"
+ 
+PWD=`pwd`
+
+# installation de stow
+mkdir -p ~/local/stow
+mkdir -p ~/local/bin
+mkdir -p ~/local/info
+mkdir -p ~/local/etc
+mkdir -p ~/local/share
+mkdir -p ~/local/lib
+mkdir -p ~/local/man
+mkdir -p ~/local/man/man1
+mkdir -p ~/local/man/man2
+mkdir -p ~/local/man/man3
+mkdir -p ~/local/man/man4
+mkdir -p ~/local/man/man5
+mkdir -p ~/local/man/man6
+mkdir -p ~/local/man/man7
+mkdir -p ~/local/man/man8
+mkdir -p ~/local/share/man
+mkdir -p ~/local/share/man/man1
+mkdir -p ~/local/share/man/man2
+mkdir -p ~/local/share/man/man3
+mkdir -p ~/local/X11R6
+mkdir -p ~/local/sbin
+mkdir -p ~/local/include
+mkdir -p ~/local/src
+cd ~/local/src
+if [ ! -f ~/local/src/stow-$STOW_VERSION ]; then 
+  curl -s http://ftp.gnu.org/gnu/stow/stow-$STOW_VERSION.tar.gz | tar xz
+fi
+cd stow-$STOW_VERSION
+./configure --prefix=$HOME/local/stow/stow-$STOW_VERSION
+make && make install
+cd ~/local/stow/
+./stow-$STOW_VERSION/bin/stow stow-$STOW_VERSION
+ 
+# compile nodejs
+cd ~/local/src
+if [ ! -f ~/local/src/node-v$NODE_VERSION ]; then 
+  curl -s http://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION.tar.gz | tar -xzf -
+fi
+cd ~/local/src/node-v$NODE_VERSION
+./configure --prefix=~/local/stow/node-v$NODE_VERSION
+make && make install
+ 
+# setup environnement variables for node and npm access
+grep " PATH=" ~/.profile | grep "/local/" >/dev/null
+if [ "$?" != 0 ]; then
+  echo "export PATH=\$HOME/local/bin:\${PATH:=}" >> ~/.profile
+fi
+grep " MANPATH=" ~/.profile | grep "/local/" >/dev/null
+if [ "$?" != 0 ]; then
+  echo "export MANPATH=\$HOME/local/man:\${MANPATH:=}" >> ~/.profile
+fi
+grep " LD_LIBRARY_PATH=" ~/.profile | grep "/local/" >/dev/null
+if [ "$?" != 0 ]; then
+  echo "export LD_LIBRARY_PATH=\$HOME/local/lib:\${LD_LIBRARY_PATH:=}" >> ~/.profile
+fi
+export PATH=$HOME/local/bin:${PATH:=}
+export MANPATH=$HOME/local/man:${MANPATH:=}
+export LD_LIBRARY_PATH=$HOME/local/lib:${LD_LIBRARY_PATH:=}
+ 
+# activate a nodejs version 
+cd ~/local/stow
+stow node-v$NODE_VERSION
+ 
+# setup npm for internet access
+npm config set registry http://registry.npmjs.org/
+ 
+cd $PWD
