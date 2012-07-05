@@ -1,10 +1,10 @@
 #!/bin/bash 
 # 
 # Script in charge of installing nodejs and npm in the current home directory
-# apt-get install make curl gcc libssl-dev
+#
 
 STOW_VERSION="2.1.3"
-NODE_VERSION="0.7.9"
+NODE_VERSION="0.8.1"
 
 for i in $*
 do
@@ -59,7 +59,7 @@ cd ~/local/stow/
  
 # compile nodejs
 cd ~/local/src
-if [ ! -f ~/local/src/node-v$NODE_VERSION ]; then 
+if [ ! -d ~/local/src/node-v$NODE_VERSION ]; then 
   curl -s http://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION.tar.gz | tar -xzf -
 fi
 cd ~/local/src/node-v$NODE_VERSION

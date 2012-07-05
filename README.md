@@ -3,7 +3,7 @@
 This script helps to install nodejs in your home directory. NodeJS is downloaded, compiled and installed in ~/local/ and stow is used to handle multiple nodejs versions.
 
 Require:
-<code>apt-get install make curl gcc libssl-dev</code>
+<code>apt-get install make curl gcc g++ libssl-dev libstdc++6 libstdc++6-4.4-dev</code>
 
 Example:
 <code>
